@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <audio autoplay loop>
+            <source src="music/lovesong.mp3" type="audio/mpeg">
+        </audio>
+        <title>I like you</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        
+        body {
+            background-color: #1a1a1a;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+            overflow: hidden;
+            color: #fff;
+        }
+        #container {
+            position: relative;
+            transform: scale(0.8);
+            transform-origin: center;
+            transition: transform 1s ease-in-out;
+        }
+        .particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 1px;
+            background-color: #ffffff;
+            transition: transform 5s ease-in-out, background-color 1s ease-in;
+            will-change: transform, background-color;
+        }
+        </style>
+    </head>
+    <body>
+        <div id="container"></div>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const letterMatrices = {
+                'A': [[0,1,1,0], [1,0,0,1], [1,1,1,1], [1,0,0,1], [1,0,0,1]],
+                'B': [[1,1,1,1], [1,0,0,1], [1,1,1,0], [1,0,0,1], [1,1,1,1]],
+                'C': [[0,1,1,1], [1,0,0,0], [1,0,0,0], [1,0,0,0], [0,1,1,1]],
+                'D': [[1,1,1,0], [1,0,0,1], [1,0,0,1], [1,0,0,1], [1,1,1,0]],
+                'E': [[1,1,1,1], [1,0,0,0], [1,1,1,0], [1,0,0,0], [1,1,1,1]],
+                'F': [[1,1,1,1], [1,0,0,0], [1,1,1,0], [1,0,0,0], [1,0,0,0]],
+                'G': [[1,1,1,1], [1,0,0,0], [1,0,1,1], [1,0,0,1], [1,1,1,1]],
+                'H': [[1,0,0,1], [1,0,0,1], [1,1,1,1], [1,0,0,1], [1,0,0,1]],
+                'I': [[1,1,1], [0,1,0], [0,1,0], [0,1,0], [1,1,1]],
+                'J': [[0,0,0,1], [0,0,0,1], [0,0,0,1], [1,0,0,1], [1,1,1,1]],
+                'K': [[1,0,0,1], [1,0,1,0], [1,1,0,0], [1,0,1,0], [1,0,0,1]],
+                'L': [[1,0,0], [1,0,0], [1,0,0], [1,0,0], [1,1,1]],
+                'M': [[1,1,1,1,0], [1,0,1,0,1], [1,0,1,0,1], [1,0,1,0,1], [1,0,1,0,1]],
+                'N': [[1,0,0,0,1], [1,1,0,0,1], [1,0,1,0,1], [1,0,0,1,1], [1,0,0,0,1]],
+                'O': [[0,1,1,0], [1,0,0,1], [1,0,0,1], [1,0,0,1], [0,1,1,0]],
+                'P': [[1,1,1,0], [1,0,0,1], [1,0,0,1], [1,1,1,0], [1,0,0,0]],
+                'Q': [[0,1,1,0,0], [1,0,0,1,0], [1,0,0,1,0], [1,0,0,1,0], [0,1,1,0,1]],
+                'R': [[1,1,1,1], [1,0,0,1], [1,0,0,1], [1,1,1,0], [1,0,0,1]],
+                'S': [[0,1,1], [1,0,0], [1,1,1], [0,0,1], [1,1,0]],
+                'T': [[1,1,1], [0,1,0], [0,1,0], [0,1,0], [0,1,0]],
+                'U': [[1,0,0,1], [1,0,0,1], [1,0,0,1], [1,0,0,1], [0,1,1,0]],
+                'V': [[1,0,0,0,1], [1,0,0,0,1], [1,0,0,0,1], [0,1,0,1,0], [0,0,1,0,0]],
+                'W': [[1,0,1,0,1], [1,0,1,0,1], [1,0,1,0,1], [1,0,1,0,1], [0,1,1,1,0]],
+                'X': [[1,0,0,0,1], [0,1,0,1,0], [0,0,1,0,0], [0,1,0,1,0], [1,0,0,0,1]],
+                'Y': [[1,0,0,0,1], [0,1,0,1,0], [0,0,1,0,0], [0,0,1,0,0], [0,0,1,0,0]],
+                'Z': [[1,1,1,1], [0,0,0,1], [0,1,1,0], [1,0,0,0], [1,1,1,1]],
+                '!': [[0,1,0],[0,1,0],[0,1,0],[0,0,0],[0,1,0]],
+                '.': [[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,1,0]],
+                ',': [[0,0,0],[0,0,0],[0,0,0],[0,1,0],[0,1,0]],
+                ' ': [[0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]]
+            };
+
+            const quotes_that_took_me_2_hours_thinking_and_yes_i_lost_my_sigma_skibidi_rizzler_mewing_streak = [
+                ["I", "LIKE", "YOU!"],
+                ["NOW I'M THINKING", "OF YOU"],
+                ["I WILL SHOW YOU", "MY", "BRAVET SIDE"],
+                ["I CAN STAY LOOKING", "AT YOU A", "LITTLE LONGER?"],
+                ["I WOULD LIKE TO", "IMMERSE MYSELF IN", "YOUR GAZE"]
+            ];
+
+            const container = document.getElementById("container");
+            const particleSize = 5;
+            const charSpacing = 10;
+            const lineSpacing = 15;
+            let particles = [];
+            let quoteIndex = 0;
+
+            function getRainbowColor(index, total) {
+                const hue = (360 / total) * index;
+                return `hsl(${hue}, 100%, 70%)`;
+            }
+
+            function generateTargetPoints(message) {
+                const words = Array.isArray(message) ? message : message.split(' ');
+                const points = [];
+                
+                const lineData = words.map(word => {
+                    let totalWidth = 0;
+                    for (const char of word.toUpperCase()) {
+                        const matrix = letterMatrices[char] || letterMatrices[' '];
+                        totalWidth += matrix[0].length * particleSize + charSpacing;
+                    }
+                    return { word: word, width: totalWidth - charSpacing };
+                });
+
+                let totalHeight = (lineData.length * (5 * particleSize + lineSpacing)) - lineSpacing;
+
+                for (let i = 0; i < lineData.length; i++) {
+                    let offsetX = -(lineData[i].width / 2);
+                    let lineOffsetY = (i * (5 * particleSize + lineSpacing)) - (totalHeight / 2);
+
+                    for (const char of lineData[i].word.toUpperCase()) {
+                        const matrix = letterMatrices[char] || letterMatrices[' '];
+                        for (let y = 0; y < matrix.length; y++) {
+                            for (let x = 0; x < matrix[y].length; x++) {
+                                if (matrix[y][x] === 1) {
+                                    points.push({
+                                        x: offsetX + x * particleSize,
+                                        y: lineOffsetY + y * particleSize
+                                    });
+                                }
+                            }
+                        }
+                        offsetX += matrix[0].length * particleSize + charSpacing;
+                    }
+                }
+                return points;
+            }
+
+            
+            function updateParticles(targetPoints) {
+                const currentLength = particles.length;
+                const targetLength = targetPoints.length;
+
+                if (targetLength > currentLength) {
+                    for (let i = 0; i < targetLength - currentLength; i++) {
+                        const particle = document.createElement("div");
+                        particle.className = "particle";
+                        const randomX = (Math.random() - 0.5) * window.innerWidth * 2;
+                        const randomY = (Math.random() - 0.5) * window.innerHeight * 2;
+                        particle.style.transform = `translate(${randomX}px, ${randomY}px)`;
+                        container.appendChild(particle);
+                        particles.push(particle);
+                    }
+                }
+                particles.forEach((p, i) => {
+                    if (i < targetLength) {
+                        const target = targetPoints[i];
+                        p.style.transform = `translate(${target.x}px, ${target.y}px)`;
+                        p.style.backgroundColor = getRainbowColor(i, targetPoints.length);
+                        p.style.opacity = 1;
+                    }
+                    
+                    else {
+                        const randomX = (Math.random() - 0.5) * window.innerWidth * 2;
+                        const randomY = (Math.random() - 0.5) * window.innerHeight * 2;
+                        p.style.transform = `translate(${randomX}px, ${randomY}px)`;
+                        p.style.backgroundColor = '#ffffff';
+                        p.style.opacity = 0;
+                    }
+                });
+                setTimeout(() => {
+                    while (particles.length > targetLength) {
+                        container.removeChild(particles.pop());
+                    }
+                }, 1600);
+            }
+
+            function animateQuotes() {
+                const currentQuote = quotes_that_took_me_2_hours_thinking_and_yes_i_lost_my_sigma_skibidi_rizzler_mewing_streak[quoteIndex];
+                const targetPoints = generateTargetPoints(currentQuote);
+                updateParticles(targetPoints);
+
+                quoteIndex = (quoteIndex + 1) % quotes_that_took_me_2_hours_thinking_and_yes_i_lost_my_sigma_skibidi_rizzler_mewing_streak.length;
+                setTimeout(animateQuotes, 8000);
+            }
+
+            const maxParticles = Math.max(...quotes_that_took_me_2_hours_thinking_and_yes_i_lost_my_sigma_skibidi_rizzler_mewing_streak.map(q => generateTargetPoints(q).length));
+            for (let i = 0; i < maxParticles; i++) {
+                const particle = document.createElement("div");
+                particle.className = "particle";
+                const randomX = (Math.random() - 0.5) * window.innerWidth * 2;
+                const randomY = (Math.random() - 0.5) * window.innerHeight * 2;
+                particle.style.transform = `translate(${randomX}px, ${randomY}px)`;
+                container.appendChild(particle);
+                particles.push(particle);
+            }
+
+            setTimeout(animateQuotes, 2000);
+        });
+        </script>
+    </body>
+</html>
+
